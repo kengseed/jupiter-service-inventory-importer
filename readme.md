@@ -6,4 +6,4 @@
     - py load_survey_template.py "online-dependency-mainframe" "C:/path/online-dependency-mf_template.xlsx"
 
     - py load_survey_template.py "batch-open" "C:/path/batch-open_template.xlsx"
-    - py load_survey_template.py "batch-open" "C:/path/batch-mf_template.xlsx"
+    - py load_survey_template.py "batch-mainframe" "C:/path/batch-mf_template.xlsx"
