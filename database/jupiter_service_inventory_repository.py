@@ -91,10 +91,12 @@ class ServiceInventoryRepository:
                 print(
                     (
                         "Added row:{index} to temporary table temp_jupiter_service_catalog_open"
-                    ).format(index=index)
+                    ).format(index=index + 1)
                 )
+                
 
             # Transform temporary table to main table
+            print("Starting transform temporary table to main table jupiter_service_catalog_open...")
             cursor.callproc("sp_jupiter_service_catalog_transform_open")
 
             # Commit & Close Connection
