@@ -1,10 +1,12 @@
 import sys
 import pandas as pd
-import database.jupiter_service_inventory_repository as repository
+import configparser
+from database.jupiter_service_inventory_repository import ServiceInventoryRepository
 
 
 def loadSurveyTemplateToDatabase(mode: str, path: str):
     df = pd.read_excel(path)
+    repository = ServiceInventoryRepository()
 
     print(("Loading survey template ({mode}) to database...").format(mode=mode))
 
