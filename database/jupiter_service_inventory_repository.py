@@ -93,10 +93,11 @@ class ServiceInventoryRepository:
                         "Added row:{index} to temporary table temp_jupiter_service_catalog_open"
                     ).format(index=index + 1)
                 )
-                
 
             # Transform temporary table to main table
-            print("Starting transform temporary table to main table jupiter_service_catalog_open...")
+            print(
+                "Starting transform temporary table to main table jupiter_service_catalog_open..."
+            )
             cursor.callproc("sp_jupiter_service_catalog_transform_open")
 
             # Commit & Close Connection
@@ -127,7 +128,32 @@ class ServiceInventoryRepository:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # Logics
+            # Clear temporary table and insert
+            cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_open")
+            for index, row in list:
+                cursor.execute(
+                    "INSERT INTO temp_jupiter_interface_dependency_open (consumer_service_id, provider_service_id, timeout_sec, bu_expect_response_sec, fill_by_email, fill_by_fullname, fill_by_date) VALUES(%s, %s, %s, %s, %s, %s, %s)",
+                    (
+                        row["consumer_service_id"],
+                        row["provider_service_id"],
+                        row["timeout_sec"],
+                        row["bu_expect_response_sec"],
+                        row["fill_by_email"],
+                        row["fill_by_fullname"],
+                        row["fill_by_date"],
+                    ),
+                )
+                print(
+                    (
+                        "Added row:{index} to temporary table temp_jupiter_interface_dependency_open"
+                    ).format(index=index + 1)
+                )
+
+            # Transform temporary table to main table
+            print(
+                "Starting transform temporary table to main table jupiter_interface_dependency..."
+            )
+            cursor.callproc("sp_jupiter_interface_dependency_transform_open")
 
             # Commit & Close Connection
             db.commit()

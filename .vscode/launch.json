@@ -11,8 +11,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "online-provider-open",
-                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-provider-open_template.xlsx"
+                "online-dependency-open",
+                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-dependency-open_template.xlsx"
             ]
         }
     ]
