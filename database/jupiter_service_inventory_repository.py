@@ -168,7 +168,41 @@ class ServiceInventoryRepository:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # Logics
+            # Clear temporary table and insert
+            cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_mainframe")
+            for index, row in list:
+                cursor.execute(
+                    "INSERT INTO temp_jupiter_interface_dependency_mainframe (consumer_app_id, consumer_app_code, consumer_service_description, consumer_service_id, provider_app_code, provider_app_code_other, provider_service_type_name, provider_service_id, provider_service_description_other, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_id, batch_eod_type, batch_frequency, batch_frequency_detail, remark) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (
+                        row["consumer_app_id"],
+                        row["consumer_app_code"],
+                        row["consumer_service_description"],
+                        row["consumer_service_id"],
+                        row["provider_app_code"],
+                        row["provider_app_code_other"],
+                        row["provider_service_type_name"],
+                        row["provider_service_id"],
+                        row["provider_service_description_other"],
+                        row["mainframe_bulk_ach_app_id"],
+                        row["mainframe_bulk_ach_transaction_code"],
+                        row["mainframe_direct_accress_file_id"],
+                        row["batch_eod_type"],
+                        row["batch_frequency"],
+                        row["batch_frequency_detail"],
+                        row["remark"],
+                    ),
+                )
+                print(
+                    (
+                        "Added row:{index} to temporary table temp_jupiter_interface_dependency_mainframe"
+                    ).format(index=index + 1)
+                )
+
+            # Transform temporary table to main table
+            print(
+                "Starting transform temporary table to main table jupiter_interface_dependency..."
+            )
+            cursor.callproc("sp_jupiter_interface_dependency_transform_mainframe")
 
             # Commit & Close Connection
             db.commit()
