@@ -27,15 +27,6 @@ class ServiceInventoryRepository:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # **Required to load RM Static, CTG to application_profile
-
-            # Logics
-            #   [Python] Truncate table temp_jupiter_service_catalog_open
-            #   [Python] Insert into temp_jupiter_service_catalog_open
-            #   [Stored Procedure]
-            #       - Delete jupiter_service_catalog from temp_jupiter_service_catalog_open.app_id, app_name (To add CASCADE DELETE on jupiter_interface_dependency)
-            #       - Insert into jupiter_service_catalog from temp_jupiter_service_catalog_open
-
             # Clear temporary table and insert
             cursor.execute("TRUNCATE TABLE temp_jupiter_service_catalog_open")
             for index, row in list:
@@ -113,7 +104,98 @@ class ServiceInventoryRepository:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # Logics
+            # Clear temporary table and insert
+            cursor.execute("TRUNCATE TABLE temp_jupiter_service_catalog_mainframe")
+            for index, row in list:
+                cursor.execute(
+                    "INSERT INTO temp_jupiter_service_catalog_mainframe (service_id, app_id, app_name, service_type_name, service_description, cicsproc_program_id, cicsproc_copybook_name, cicsproc_copybook_library_name, cicsproc_services_field_name_1, cicsproc_services_field_value_1, cicsproc_services_field_name_2, cicsproc_services_field_value_2, cicsproc_services_field_name_3, cicsproc_services_field_value_3, cicsproc_services_field_name_4, cicsproc_services_field_value_4, cicsproc_services_field_name_5, cicsproc_services_field_value_5, cicstran_cics_trans, cicstran_copybook_name, cicstran_copybook_library_name, cicstran_transaction_id, cicstran_sub_code_1, cicstran_sub_code_2, `3270_screen_id`, `3270_mapset`, `3270_program`, `3270_transaction`, tdq_queue_name, tdq_copybook_name, tdq_copybook_library_name, tsq_queue_name, tsq_copybook_name, tsq_copybook_library_name, ach_app_id, ach_copybook_name, ach_copybook_library_name, directact_cics_name, directact_copybook_name, directact_copybook_library_name, directact_file_name, directact_physical_file_name, dag_external_transaction_code, dag_tbr_class, dag_tbr_name, dag_icr_class, dag_icr_name, dag_tcr_class, dag_tcr_name, dag_dags_input, dag_dags_output, dag_tp_pre_processor, dag_application_business_module, dag_input_data_pos_1, dag_input_data_pos_8, batchproc_program_id, batchproc_copybook_name, batchproc_copybook_library_name, batchproc_services_field_name_1, batchproc_services_field_value_1, batchproc_services_field_name_2, batchproc_services_field_value_2, batchproc_services_field_name_3, batchproc_services_field_value_3, batchproc_services_field_name_4, batchproc_services_field_value_4, batchproc_services_field_name_5, batchproc_services_field_value_5, batchproc_eod_batch, batchproc_frequency, batchproc_frequency_details, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                    (
+                        row["service_id"],
+                        row["app_id"],
+                        row["app_name"],
+                        row["service_type_name"],
+                        row["service_description"],
+                        row["cicsproc_program_id"],
+                        row["cicsproc_copybook_name"],
+                        row["cicsproc_copybook_library_name"],
+                        row["cicsproc_services_field_name_1"],
+                        row["cicsproc_services_field_value_1"],
+                        row["cicsproc_services_field_name_2"],
+                        row["cicsproc_services_field_value_2"],
+                        row["cicsproc_services_field_name_3"],
+                        row["cicsproc_services_field_value_3"],
+                        row["cicsproc_services_field_name_4"],
+                        row["cicsproc_services_field_value_4"],
+                        row["cicsproc_services_field_name_5"],
+                        row["cicsproc_services_field_value_5"],
+                        row["cicstran_cics_trans"],
+                        row["cicstran_copybook_name"],
+                        row["cicstran_copybook_library_name"],
+                        row["cicstran_transaction_id"],
+                        row["cicstran_sub_code_1"],
+                        row["cicstran_sub_code_2"],
+                        row["3270_screen_id"],
+                        row["3270_mapset"],
+                        row["3270_program"],
+                        row["3270_transaction"],
+                        row["tdq_queue_name"],
+                        row["tdq_copybook_name"],
+                        row["tdq_copybook_library_name"],
+                        row["tsq_queue_name"],
+                        row["tsq_copybook_name"],
+                        row["tsq_copybook_library_name"],
+                        row["ach_app_id"],
+                        row["ach_copybook_name"],
+                        row["ach_copybook_library_name"],
+                        row["directact_cics_name"],
+                        row["directact_copybook_name"],
+                        row["directact_copybook_library_name"],
+                        row["directact_file_name"],
+                        row["directact_physical_file_name"],
+                        row["dag_external_transaction_code"],
+                        row["dag_tbr_class"],
+                        row["dag_tbr_name"],
+                        row["dag_icr_class"],
+                        row["dag_icr_name"],
+                        row["dag_tcr_class"],
+                        row["dag_tcr_name"],
+                        row["dag_dags_input"],
+                        row["dag_dags_output"],
+                        row["dag_tp_pre_processor"],
+                        row["dag_application_business_module"],
+                        row["dag_input_data_pos_1"],
+                        row["dag_input_data_pos_8"],
+                        row["batchproc_program_id"],
+                        row["batchproc_copybook_name"],
+                        row["batchproc_copybook_library_name"],
+                        row["batchproc_services_field_name_1"],
+                        row["batchproc_services_field_value_1"],
+                        row["batchproc_services_field_name_2"],
+                        row["batchproc_services_field_value_2"],
+                        row["batchproc_services_field_name_3"],
+                        row["batchproc_services_field_value_3"],
+                        row["batchproc_services_field_name_4"],
+                        row["batchproc_services_field_value_4"],
+                        row["batchproc_services_field_name_5"],
+                        row["batchproc_services_field_value_5"],
+                        row["batchproc_eod_batch"],
+                        row["batchproc_frequency"],
+                        row["batchproc_frequency_details"],
+                        "SYSTEM",
+                        "SYSTEM",
+                    ),
+                )
+                print(
+                    (
+                        "Added row:{index} to temporary table temp_jupiter_service_catalog_mainframe"
+                    ).format(index=index + 1)
+                )
+
+            # Transform temporary table to main table
+            print(
+                "Starting transform temporary table to main table jupiter_service_catalog_open..."
+            )
+            cursor.callproc("sp_jupiter_service_catalog_transform_mainframe")
 
             # Commit & Close Connection
             db.commit()
