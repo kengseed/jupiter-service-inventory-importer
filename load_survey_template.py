@@ -15,10 +15,6 @@ def loadSurveyTemplateToDatabase(mode: str, mainPath: str, secondaryPath: str):
             repository.loadServiceCatalogOpen(df.iterrows())
         case "online-provider-mainframe":
             repository.loadServiceCatalogMainframe(df.iterrows())
-        # case "online-dependency-open":
-        #     repository.loadInterfaceDependencyOpen(df.iterrows())
-        # case "online-dependency-mainframe":
-        #     repository.loadInterfaceDependencyMainframe(df.iterrows())
         case "online-dependency":
             mainframeDf = pd.read_excel(secondaryPath)
             repository.loadInterfaceDependency(df.iterrows(), mainframeDf.iterrows())
