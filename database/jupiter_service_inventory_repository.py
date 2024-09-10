@@ -1,5 +1,6 @@
 import configparser
 from mysql.connector import MySQLConnection, Error
+from mysql.connector.cursor import MySQLCursor
 
 
 class ServiceInventoryRepository:
@@ -16,12 +17,6 @@ class ServiceInventoryRepository:
         )
         return db
 
-    # def tryParseNumber(value):
-    #     try:
-    #         return value if str(value).isnumeric() else None
-    #     except Error as e:
-    #         return None
-
     def loadServiceCatalogOpen(self, list: list):
         try:
             db = self.__getConnection()
@@ -31,7 +26,7 @@ class ServiceInventoryRepository:
             cursor.execute("TRUNCATE TABLE temp_jupiter_service_catalog_open")
             for index, row in list:
                 cursor.execute(
-                    "INSERT INTO temp_jupiter_service_catalog_open (service_id, app_id, app_name, service_type_name, is_internal_service, is_internal_app_service, service_code, service_name, sub_service_name, app_addtional_info, service_description, financial_transaction_related, service_action_type, interface_tech_protocol_names, interface_tech_protocol_other, service_endpoint, message_size_request, message_size_response, avg_transaction_per_sec, max_transaction_per_sec, avg_response_sec, max_response_sec, avg_transaction_per_day, max_transaction_per_day, avg_message_per_sec, max_message_per_sec, avg_streaming_per_sec, max_streaming_per_sec, interface_spec_format_names, interface_spec_format_other, message_format_names, message_format_other, service_availability_name, service_availability_other, service_available_start_time, service_available_end_time, peak_day_duration, message_spec_sharepoint_folder, message_spec_file_name, message_spec_file_name_request, message_spec_file_name_response, fill_by_email, fill_by_fullname, fill_by_date) values (%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s ,%s)",
+                    "INSERT INTO temp_jupiter_service_catalog_open (service_id, app_id, app_name, service_type_name, is_internal_service, is_internal_app_service, service_code, service_name, sub_service_name, app_addtional_info, service_description, financial_transaction_related, service_action_type, interface_tech_protocol_names, interface_tech_protocol_other, service_endpoint, message_size_request, message_size_response, avg_transaction_per_sec, max_transaction_per_sec, avg_response_sec, max_response_sec, avg_transaction_per_day, max_transaction_per_day, avg_message_per_sec, max_message_per_sec, avg_streaming_per_sec, max_streaming_per_sec, interface_spec_format_names, interface_spec_format_other, message_format_names, message_format_other, service_availability_name, service_availability_other, service_available_start_time, service_available_end_time, peak_day_duration, message_spec_sharepoint_folder, message_spec_file_name, message_spec_file_name_request, message_spec_file_name_response, fill_by_email, fill_by_fullname, fill_by_date, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
                     (
                         row["service_id"],
                         row["app_id"],
@@ -77,6 +72,8 @@ class ServiceInventoryRepository:
                         row["fill_by_email"],
                         row["fill_by_fullname"],
                         row["fill_by_date"],
+                        "SYSTEM",
+                        "SYSTEM",
                     ),
                 )
                 print(
@@ -205,86 +202,88 @@ class ServiceInventoryRepository:
             print(e)
             raise e
 
-    def loadInterfaceDependencyOpen(self, list: list):
+    def __loadInterfaceDependencyOpen(self, cursor: MySQLCursor, list: list):
+        # Clear temporary table and insert
+        cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_open")
+        for index, row in list:
+            cursor.execute(
+                "INSERT INTO temp_jupiter_interface_dependency_open (consumer_app_id, consumer_app_code, consumer_service_id_or_name, consumer_service_description, provider_service_id, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_name, mainframe_direct_accress_cics_name, batch_eod_type, batch_frequency, batch_frequency_detail, ebs_message_type, ebs_trans_code, ebs_from_account_code, ebs_to_account_code, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                (
+                    row["consumer_app_id"],
+                    row["consumer_app_code"],
+                    row["consumer_service_id_or_name"],
+                    row["consumer_service_description"],
+                    row["provider_service_id"],
+                    row["mainframe_bulk_ach_app_id"],
+                    row["mainframe_bulk_ach_transaction_code"],
+                    row["mainframe_direct_accress_file_name"],
+                    row["mainframe_direct_accress_cics_name"],
+                    row["batch_eod_type"],
+                    row["batch_frequency"],
+                    row["batch_frequency_detail"],
+                    row["ebs_message_type"],
+                    row["ebs_trans_code"],
+                    row["ebs_from_account_code"],
+                    row["ebs_to_account_code"],
+                    "SYSTEM",
+                    "SYSTEM",
+                ),
+            )
+            print(
+                (
+                    "Added row:{index} to temporary table temp_jupiter_interface_dependency_open"
+                ).format(index=index + 1)
+            )
+
+    def __loadInterfaceDependencyMainframe(self, cursor: MySQLCursor, list: list):
+        # Clear temporary table and insert
+        cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_mainframe")
+        for index, row in list:
+            cursor.execute(
+                "INSERT INTO temp_jupiter_interface_dependency_mainframe (consumer_app_id, consumer_app_code, consumer_service_description, consumer_service_id, provider_app_code, provider_app_code_other, provider_service_type_name, provider_service_id, provider_service_description_other, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_id, batch_eod_type, batch_frequency, batch_frequency_detail, remark, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                (
+                    row["consumer_app_id"],
+                    row["consumer_app_code"],
+                    row["consumer_service_description"],
+                    row["consumer_service_id"],
+                    row["provider_app_code"],
+                    row["provider_app_code_other"],
+                    row["provider_service_type_name"],
+                    row["provider_service_id"],
+                    row["provider_service_description_other"],
+                    row["mainframe_bulk_ach_app_id"],
+                    row["mainframe_bulk_ach_transaction_code"],
+                    row["mainframe_direct_accress_file_id"],
+                    row["batch_eod_type"],
+                    row["batch_frequency"],
+                    row["batch_frequency_detail"],
+                    row["remark"],
+                    "SYSTEM",
+                    "SYSTEM",
+                ),
+            )
+            print(
+                (
+                    "Added row:{index} to temporary table temp_jupiter_interface_dependency_mainframe"
+                ).format(index=index + 1)
+            )
+
+    def loadInterfaceDependency(
+        self, openDependencylist: list, mainframeDependencylist: list
+    ):
         try:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # Clear temporary table and insert
-            cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_open")
-            for index, row in list:
-                cursor.execute(
-                    "INSERT INTO temp_jupiter_interface_dependency_open (consumer_service_id, provider_service_id, timeout_sec, bu_expect_response_sec, fill_by_email, fill_by_fullname, fill_by_date) VALUES(%s, %s, %s, %s, %s, %s, %s)",
-                    (
-                        row["consumer_service_id"],
-                        row["provider_service_id"],
-                        row["timeout_sec"],
-                        row["bu_expect_response_sec"],
-                        row["fill_by_email"],
-                        row["fill_by_fullname"],
-                        row["fill_by_date"],
-                    ),
-                )
-                print(
-                    (
-                        "Added row:{index} to temporary table temp_jupiter_interface_dependency_open"
-                    ).format(index=index + 1)
-                )
+            # Load data to temporary tables (Open, Mainframe)
+            self.__loadInterfaceDependencyOpen(cursor, openDependencylist)
+            self.__loadInterfaceDependencyMainframe(cursor, mainframeDependencylist)
 
             # Transform temporary table to main table
             print(
                 "Starting transform temporary table to main table jupiter_interface_dependency..."
             )
-            cursor.callproc("sp_jupiter_interface_dependency_transform_open")
-
-            # Commit & Close Connection
-            db.commit()
-            cursor.close()
-            db.close()
-        except Error as e:
-            print(e)
-            raise e
-
-    def loadInterfaceDependencyMainframe(self, list: list):
-        try:
-            db = self.__getConnection()
-            cursor = db.cursor()
-
-            # Clear temporary table and insert
-            cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_mainframe")
-            for index, row in list:
-                cursor.execute(
-                    "INSERT INTO temp_jupiter_interface_dependency_mainframe (consumer_app_id, consumer_app_code, consumer_service_description, consumer_service_id, provider_app_code, provider_app_code_other, provider_service_type_name, provider_service_id, provider_service_description_other, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_id, batch_eod_type, batch_frequency, batch_frequency_detail, remark) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                    (
-                        row["consumer_app_id"],
-                        row["consumer_app_code"],
-                        row["consumer_service_description"],
-                        row["consumer_service_id"],
-                        row["provider_app_code"],
-                        row["provider_app_code_other"],
-                        row["provider_service_type_name"],
-                        row["provider_service_id"],
-                        row["provider_service_description_other"],
-                        row["mainframe_bulk_ach_app_id"],
-                        row["mainframe_bulk_ach_transaction_code"],
-                        row["mainframe_direct_accress_file_id"],
-                        row["batch_eod_type"],
-                        row["batch_frequency"],
-                        row["batch_frequency_detail"],
-                        row["remark"],
-                    ),
-                )
-                print(
-                    (
-                        "Added row:{index} to temporary table temp_jupiter_interface_dependency_mainframe"
-                    ).format(index=index + 1)
-                )
-
-            # Transform temporary table to main table
-            print(
-                "Starting transform temporary table to main table jupiter_interface_dependency..."
-            )
-            cursor.callproc("sp_jupiter_interface_dependency_transform_mainframe")
+            cursor.callproc("sp_jupiter_interface_dependency_transform")
 
             # Commit & Close Connection
             db.commit()

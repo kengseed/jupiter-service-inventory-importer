@@ -4,8 +4,8 @@ import configparser
 from database.jupiter_service_inventory_repository import ServiceInventoryRepository
 
 
-def loadSurveyTemplateToDatabase(mode: str, path: str):
-    df = pd.read_excel(path)
+def loadSurveyTemplateToDatabase(mode: str, mainPath: str, secondaryPath: str):
+    df = pd.read_excel(mainPath)
     repository = ServiceInventoryRepository()
 
     print(("Loading survey template ({mode}) to database...").format(mode=mode))
@@ -15,10 +15,13 @@ def loadSurveyTemplateToDatabase(mode: str, path: str):
             repository.loadServiceCatalogOpen(df.iterrows())
         case "online-provider-mainframe":
             repository.loadServiceCatalogMainframe(df.iterrows())
-        case "online-dependency-open":
-            repository.loadInterfaceDependencyOpen(df.iterrows())
-        case "online-dependency-mainframe":
-            repository.loadInterfaceDependencyMainframe(df.iterrows())
+        # case "online-dependency-open":
+        #     repository.loadInterfaceDependencyOpen(df.iterrows())
+        # case "online-dependency-mainframe":
+        #     repository.loadInterfaceDependencyMainframe(df.iterrows())
+        case "online-dependency":
+            mainframeDf = pd.read_excel(secondaryPath)
+            repository.loadInterfaceDependency(df.iterrows(), mainframeDf.iterrows())
         case "batch-open":
             repository.loadBatchOpen(df.iterrows())
         case "batch-mainframe":
@@ -28,4 +31,4 @@ def loadSurveyTemplateToDatabase(mode: str, path: str):
 
 
 if len(sys.argv) > 1 and sys.argv[1] != "":
-    loadSurveyTemplateToDatabase(sys.argv[1], sys.argv[2])
+    loadSurveyTemplateToDatabase(sys.argv[1], sys.argv[2], sys.argv[3])

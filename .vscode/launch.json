@@ -11,8 +11,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "online-provider-mainframe",
-                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-provider-mf_template.xlsx"
+                "online-provider-open",
+                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-provider-open_template.xlsx",
+                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-dependency-mf_template.xlsx"
             ]
         }
     ]
