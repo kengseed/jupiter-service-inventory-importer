@@ -207,7 +207,7 @@ class ServiceInventoryRepository:
         cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_open")
         for index, row in list:
             cursor.execute(
-                "INSERT INTO temp_jupiter_interface_dependency_open (consumer_app_id, consumer_app_code, consumer_service_id_or_name, consumer_service_description, provider_service_id, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_name, mainframe_direct_accress_cics_name, batch_eod_type, batch_frequency, batch_frequency_detail, ebs_message_type, ebs_trans_code, ebs_from_account_code, ebs_to_account_code, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                "INSERT INTO temp_jupiter_interface_dependency_open (consumer_app_id, consumer_app_code, consumer_service_id_or_name, consumer_service_description, provider_service_id, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_access_file_name, mainframe_direct_access_cics_name, batch_eod_type, batch_frequency, batch_frequency_detail, ebs_message_type, ebs_trans_code, ebs_from_account_code, ebs_to_account_code, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
                 (
                     row["consumer_app_id"],
                     row["consumer_app_code"],
@@ -216,8 +216,8 @@ class ServiceInventoryRepository:
                     row["provider_service_id"],
                     row["mainframe_bulk_ach_app_id"],
                     row["mainframe_bulk_ach_transaction_code"],
-                    row["mainframe_direct_accress_file_name"],
-                    row["mainframe_direct_accress_cics_name"],
+                    row["mainframe_direct_access_file_name"],
+                    row["mainframe_direct_access_cics_name"],
                     row["batch_eod_type"],
                     row["batch_frequency"],
                     row["batch_frequency_detail"],
@@ -240,7 +240,7 @@ class ServiceInventoryRepository:
         cursor.execute("TRUNCATE TABLE temp_jupiter_interface_dependency_mainframe")
         for index, row in list:
             cursor.execute(
-                "INSERT INTO temp_jupiter_interface_dependency_mainframe (consumer_app_id, consumer_app_code, consumer_service_description, consumer_service_id, provider_app_code, provider_app_code_other, provider_service_type_name, provider_service_id, provider_service_description_other, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_accress_file_id, batch_eod_type, batch_frequency, batch_frequency_detail, remark, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                "INSERT INTO temp_jupiter_interface_dependency_mainframe (consumer_app_id, consumer_app_code, consumer_service_description, consumer_service_id, provider_app_code, provider_app_code_other, provider_service_type_name, provider_service_id, provider_service_description_other, mainframe_bulk_ach_app_id, mainframe_bulk_ach_transaction_code, mainframe_direct_access_file_id, batch_eod_type, batch_frequency, batch_frequency_detail, remark, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
                 (
                     row["consumer_app_id"],
                     row["consumer_app_code"],
@@ -253,7 +253,7 @@ class ServiceInventoryRepository:
                     row["provider_service_description_other"],
                     row["mainframe_bulk_ach_app_id"],
                     row["mainframe_bulk_ach_transaction_code"],
-                    row["mainframe_direct_accress_file_id"],
+                    row["mainframe_direct_access_file_id"],
                     row["batch_eod_type"],
                     row["batch_frequency"],
                     row["batch_frequency_detail"],
