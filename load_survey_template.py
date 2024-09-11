@@ -18,10 +18,9 @@ def loadSurveyTemplateToDatabase(mode: str, mainPath: str, secondaryPath: str):
         case "online-dependency":
             mainframeDf = pd.read_excel(secondaryPath)
             repository.loadInterfaceDependency(df.iterrows(), mainframeDf.iterrows())
-        case "batch-open":
-            repository.loadBatchOpen(df.iterrows())
-        case "batch-mainframe":
-            repository.loadBatchMainframe(df.iterrows())
+        case "batch-dependency":
+            mainframeDf = pd.read_excel(secondaryPath)
+            repository.loadBatchDependency(df.iterrows(), mainframeDf.iterrows())
 
     print(("Loaded survey template ({mode}) to database!!").format(mode=mode))
 

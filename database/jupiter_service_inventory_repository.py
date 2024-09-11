@@ -84,7 +84,7 @@ class ServiceInventoryRepository:
 
             # Transform temporary table to main table
             print(
-                "Starting transform temporary table to main table jupiter_service_catalog_open..."
+                "Starting transform temporary table to main table jupiter_service_catalog..."
             )
             cursor.callproc("sp_jupiter_service_catalog_transform_open")
 
@@ -190,7 +190,7 @@ class ServiceInventoryRepository:
 
             # Transform temporary table to main table
             print(
-                "Starting transform temporary table to main table jupiter_service_catalog_open..."
+                "Starting transform temporary table to main table jupiter_service_catalog..."
             )
             cursor.callproc("sp_jupiter_service_catalog_transform_mainframe")
 
@@ -293,27 +293,103 @@ class ServiceInventoryRepository:
             print(e)
             raise e
 
-    def loadBatchOpen(self, list: list):
+    def __loadBatchOpen(self, cursor: MySQLCursor, list: list):
+        # Clear temporary table and insert
+        cursor.execute("TRUNCATE TABLE temp_jupiter_batch_dependency_open")
+        for index, row in list:
+            cursor.execute(
+                "INSERT INTO temp_jupiter_batch_dependency_open (source_app_code, target_app_code, service_description, batch_direction, file_transfer_by, file_transfer_job_name, batch_job_name, batch_schedule_by, batch_schedule_by_other, batch_frequency_detail, batch_source_file_name, batch_soruce_control_file_name, batch_target_file_name, batch_target_control_file_name, batch_start_time, batch_spec_file_name, fill_by_email, fill_by_fullname, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                (
+                    row["source_app_code"],
+                    row["target_app_code"],
+                    row["service_description"],
+                    row["batch_direction"],
+                    row["file_transfer_by"],
+                    row["file_transfer_job_name"],
+                    row["batch_job_name"],
+                    row["batch_schedule_by"],
+                    row["batch_schedule_by_other"],
+                    row["batch_frequency_detail"],
+                    row["batch_source_file_name"],
+                    row["batch_soruce_control_file_name"],
+                    row["batch_target_file_name"],
+                    row["batch_target_control_file_name"],
+                    row["batch_start_time"],
+                    row["batch_spec_file_name"],
+                    row["fill_by_email"],
+                    row["fill_by_fullname"],
+                    "SYSTEM",
+                    "SYSTEM",
+                ),
+            )
+            print(
+                (
+                    "Added row:{index} to temporary table temp_jupiter_batch_dependency_open"
+                ).format(index=index + 1)
+            )
+
+    def __loadBatchMainframe(self, cursor: MySQLCursor, list: list):
+        # Clear temporary table and insert
+        cursor.execute("TRUNCATE TABLE temp_jupiter_batch_dependency_mainframe")
+        for index, row in list:
+            cursor.execute(
+                "INSERT INTO temp_jupiter_batch_dependency_mainframe (owner_app_id, owner_app_code, source_app_code, target_app_code, service_description, platform_direction, batch_direction, file_transfer_by, file_transfer_job_name, batch_job_name, batch_eod_type, batch_frequency, batch_frequency_detail, batch_mainframe_file_name, batch_mainframe_control_file_name, batch_open_file_name, batch_open_control_file_name, layout_type, layout_copybook_name, layout_copybook_library_name, layout_program_name, layout_program_library_name, layout_job_name, layout_job_library_name, layout_dag_name, fill_by_email, fill_by_fullname, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                (
+                    row["owner_app_id"],
+                    row["owner_app_code"],
+                    row["source_app_code"],
+                    row["target_app_code"],
+                    row["service_description"],
+                    row["platform_direction"],
+                    row["batch_direction"],
+                    row["file_transfer_by"],
+                    row["file_transfer_job_name"],
+                    row["batch_job_name"],
+                    row["batch_eod_type"],
+                    row["batch_frequency"],
+                    row["batch_frequency_detail"],
+                    row["batch_mainframe_file_name"],
+                    row["batch_mainframe_control_file_name"],
+                    row["batch_open_file_name"],
+                    row["batch_open_control_file_name"],
+                    row["layout_type"],
+                    row["layout_copybook_name"],
+                    row["layout_copybook_library_name"],
+                    row["layout_program_name"],
+                    row["layout_program_library_name"],
+                    row["layout_job_name"],
+                    row["layout_job_library_name"],
+                    row["layout_dag_name"],
+                    row["fill_by_email"],
+                    row["fill_by_fullname"],
+                    "SYSTEM",
+                    "SYSTEM",
+                ),
+            )
+            print(
+                (
+                    "Added row:{index} to temporary table temp_jupiter_batch_dependency_mainframe"
+                ).format(index=index + 1)
+            )
+
+    def loadBatchDependency(
+        self, openDependencylist: list, mainframeDependencylist: list
+    ):
         try:
             db = self.__getConnection()
             cursor = db.cursor()
 
-            # Logics
+            # Load data to temporary tables (Open, Mainframe)
+            self.__loadBatchOpen(cursor, openDependencylist)
+            self.__loadBatchMainframe(cursor, mainframeDependencylist)
 
-            # Commit & Close Connection
-            db.commit()
-            cursor.close()
-            db.close()
-        except Error as e:
-            print(e)
-            raise e
+            # TODO: Add field jupiter_service_catalog.is_online_service and revise stored procedure 
 
-    def loadBatchMainframe(self, list: list):
-        try:
-            db = self.__getConnection()
-            cursor = db.cursor()
-
-            # Logics
+            # Transform temporary table to main table
+            print(
+                "Starting transform temporary table to main table jupiter_service_catalog and jupiter_interface_dependency..."
+            )
+            cursor.callproc("sp_jupiter_batch_dependency_transform")
 
             # Commit & Close Connection
             db.commit()

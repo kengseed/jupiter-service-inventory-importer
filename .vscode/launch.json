@@ -11,9 +11,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "online-dependency",
-                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-dependency-open_template_v2.xlsx",
-                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/online-dependency-mf_template.xlsx"
+                "batch-dependency",
+                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/batch-open_template.xlsx",
+                "C:/_Source Code/Python/jupiter-service-inventory-importer/data/batch-mf_template.xlsx"
             ]
         }
     ]
