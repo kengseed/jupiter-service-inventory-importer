@@ -382,8 +382,6 @@ class ServiceInventoryRepository:
             self.__loadBatchOpen(cursor, openDependencylist)
             self.__loadBatchMainframe(cursor, mainframeDependencylist)
 
-            # TODO: Add field jupiter_service_catalog.is_online_service and revise stored procedure 
-
             # Transform temporary table to main table
             print(
                 "Starting transform temporary table to main table jupiter_service_catalog and jupiter_interface_dependency..."
