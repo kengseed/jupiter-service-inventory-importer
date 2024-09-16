@@ -395,3 +395,34 @@ class ServiceInventoryRepository:
         except Error as e:
             print(e)
             raise e
+
+    def loadIntegrationServiceToHubMapping(self, list: list):
+        try:
+            db = self.__getConnection()
+            cursor = db.cursor()
+
+            # Clear temporary table and insert
+            cursor.execute("TRUNCATE TABLE jupiter_service_to_hub_mapping")
+            for index, row in list:
+                cursor.execute(
+                    "INSERT INTO jupiter_service_to_hub_mapping (service_id, target_state_or_provider, created_by, created_datetime, updated_by, updated_datetime) VALUES(%s, %s, %s, current_timestamp(), %s, current_timestamp())",
+                    (
+                        row["service_id"],
+                        row["target_state_or_provider"],
+                        "SYSTEM",
+                        "SYSTEM",
+                    ),
+                )
+                print(
+                    (
+                        "Added row:{index} to temporary table jupiter_service_to_hub_mapping"
+                    ).format(index=index + 1)
+                )
+
+            # Commit & Close Connection
+            db.commit()
+            cursor.close()
+            db.close()
+        except Error as e:
+            print(e)
+            raise e

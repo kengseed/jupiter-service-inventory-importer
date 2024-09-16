@@ -21,6 +21,8 @@ def loadSurveyTemplateToDatabase(mode: str, mainPath: str, secondaryPath: str):
         case "batch-dependency":
             mainframeDf = pd.read_excel(secondaryPath)
             repository.loadBatchDependency(df.iterrows(), mainframeDf.iterrows())
+        case "online-integration-hub-mapping":
+            repository.loadIntegrationServiceToHubMapping(df.iterrows())
 
     print(("Loaded survey template ({mode}) to database!!").format(mode=mode))
 
