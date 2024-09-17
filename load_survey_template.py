@@ -28,4 +28,6 @@ def loadSurveyTemplateToDatabase(mode: str, mainPath: str, secondaryPath: str):
 
 
 if len(sys.argv) > 1 and sys.argv[1] != "":
-    loadSurveyTemplateToDatabase(sys.argv[1], sys.argv[2], sys.argv[3])
+    loadSurveyTemplateToDatabase(
+        sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else ""
+    )
