@@ -415,7 +415,7 @@ class ServiceInventoryRepository:
                 )
                 print(
                     (
-                        "Added row:{index} to temporary table jupiter_service_to_hub_mapping"
+                        "Added row:{index} to table jupiter_service_to_hub_mapping"
                     ).format(index=index + 1)
                 )
 

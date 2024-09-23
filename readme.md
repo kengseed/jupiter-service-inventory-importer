@@ -1,4 +1,9 @@
 # Instruction
+
+## Required Libraries
+    - pip install mysql-connector-python
+
+## Run Commands
     - py load_survey_template.py "online-provider-open" "C:/path/online-provider-open_template.xlsx"
     - py load_survey_template.py "online-provider-mainframe" "C:/path/online-provider-mf_template.xlsx"
 
